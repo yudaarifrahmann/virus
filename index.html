@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masukkan Password</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 20%;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Masukkan Password Anda</h2>
+    <input type="password" id="password" placeholder="Masukkan Password">
+    <button onclick="checkPassword()">Submit</button>
+
+    <script>
+        let passwordEntered = false; // Status apakah password sudah dimasukkan
+
+        function checkPassword() {
+            let password = document.getElementById("password").value;
+            if (password.trim() !== "") {
+                passwordEntered = true;
+                alert("Password berhasil dimasukkan, Anda sekarang bisa kembali.");
+            } else {
+                alert("Masukkan password terlebih dahulu!");
+            }
+        }
+
+        // Mencegah tombol kembali di browser sebelum password dimasukkan
+        function preventBackNavigation() {
+            history.pushState(null, null, location.href);
+            window.onpopstate = function () {
+                if (!passwordEntered) {
+                    history.pushState(null, null, location.href);
+                    alert("Anda harus memasukkan password terlebih dahulu!");
+                }
+            };
+        }
+
+        // Mencegah pengguna menutup tab atau meninggalkan halaman sebelum memasukkan password
+        window.onbeforeunload = function(event) {
+            if (!passwordEntered) {
+                return "Anda harus memasukkan password terlebih dahulu sebelum keluar.";
+            }
+        };
+
+        // Jalankan fungsi pencegahan back button
+        preventBackNavigation();
+    </script>
+</body>
+</html>
